@@ -1,10 +1,15 @@
-import React, { useRef } from "react";
+import React, { useState } from "react";
 import styles from "./TableRow.module.css";
 
 const TableRow = (props) => {
-  const checkBoxRef = useRef(null);
+  const [isSelected, setIsSelected] = useState(props.selected); // keeps track of whether row is selected by checking the checkbox
 
   const { id, name, email, role } = props.data;
+
+  let rowCssClass = styles.row;
+  if (isSelected) {
+    rowCssClass += ` ${styles.selected}`;
+  }
 
   /**
    * Function as event handler for onClick event on action
@@ -14,17 +19,23 @@ const TableRow = (props) => {
     currentAction.onClick(id); // id corresponds to the id of the data item corresponding to the action clicked
   };
 
+  /**
+   * Function as event handler for onChange event on checkbox
+   */
   const checkBoxToggleHandler = () => {
-    checkBoxRef.current.checked ? props.onSelect(id) : props.onUnselect(id);
+    setIsSelected((prevState) => {
+      // select row if checkbox was previously not selected but now it is toggled (or say selected) and vice-versa
+      prevState ? props.onUnselect(id) : props.onSelect(id);
+      return !prevState;
+    });
   };
 
   return (
-    <ul className={styles.row}>
+    <ul className={rowCssClass}>
       <input
         type="checkbox"
         onChange={checkBoxToggleHandler}
-        checked={props.selected}
-        ref={checkBoxRef}
+        checked={isSelected}
       />
       <li>{name}</li>
       <li>{email}</li>
