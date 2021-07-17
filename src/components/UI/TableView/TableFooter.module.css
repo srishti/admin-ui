@@ -1,0 +1,8 @@
+.table-footer {
+  margin-top: 2rem;
+}
+
+.table-footer-button {
+  background: var(--clr-red);
+  color: var(--clr-white);
+}

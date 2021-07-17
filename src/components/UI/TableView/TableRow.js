@@ -12,8 +12,17 @@ const TableRow = (props) => {
     currentAction.onClick(id); // id corresponds to the id of the data item corresponding to the action clicked
   };
 
+  const checkBoxSelectHandler = () => {
+    props.onSelect(id);
+  };
+
   return (
     <ul className={styles.row}>
+      <input
+        type="checkbox"
+        onChange={checkBoxSelectHandler}
+        checked={props.selected}
+      />
       <li>{name}</li>
       <li>{email}</li>
       <li>{role}</li>

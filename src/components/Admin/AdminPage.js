@@ -8,7 +8,8 @@ import styles from "./AdminPage.module.css";
 const listReducer = (state, action) => {
   switch (action.type) {
     case constants.ACTION_TYPE.VIEW:
-    case constants.ACTION_TYPE.DELETE:
+    case constants.ACTION_TYPE.DELETE_SINGLE:
+    case constants.ACTION_TYPE.DELETE_MULTIPLE:
       return action.payload;
     default:
       return state;
@@ -16,14 +17,15 @@ const listReducer = (state, action) => {
 };
 
 const AdminPage = () => {
-  const [dataList, dispatchList] = useReducer(listReducer, []); // displays data list fetched from server
-  const [filteredDataList, setFilteredDataList] = useState([]); // displays data list based on text searched by user
+  const [dataList, dispatchList] = useReducer(listReducer, []); // keep track of data list fetched from server
+  const [filteredDataList, setFilteredDataList] = useState([]); // keep track of data list based on text searched by user
+  const [selectedItems, setSelectedItems] = useState([]); // keeps track of IDs of items selected by user by checking the checkbox
 
   /**
    * Function to search for a name or email or role in a list of data
    * @param {String} textToSearch
    */
-  const searchItemInList = (textToSearch) => {
+  const searchItem = (textToSearch) => {
     // filter list based on whether name or email or role matches text entered in search box
     const filteredDataList = dataList.filter(
       (listItem) =>
@@ -34,30 +36,94 @@ const AdminPage = () => {
     setFilteredDataList(filteredDataList);
   };
 
-  const deleteItemFromDataList = (dataItemId) => {
+  /**
+   * Function to delete an item from the dataList (list fetched from server) in state
+   * @param {String} itemId - ID of item to be deleted
+   */
+  const deleteItemFromDataList = (itemId) => {
     const updatedDataList = [...dataList];
     const indexOfItemToDelete = updatedDataList.findIndex(
-      (dataItem) => dataItem.id === dataItemId
+      (dataItem) => dataItem.id === itemId
     );
     updatedDataList.splice(indexOfItemToDelete, 1);
     dispatchList({
-      type: constants.ACTION_TYPE.DELETE,
+      type: constants.ACTION_TYPE.DELETE_SINGLE,
       payload: updatedDataList,
     });
   };
 
-  const deleteItemFromFilteredDataList = (dataItemId) => {
+  /**
+   * Function to delete an item from the filteredDataList (list filtered based on search text) in state
+   * @param {String} itemId - ID of item to be deleted
+   */
+  const deleteItemFromFilteredDataList = (itemId) => {
     const updatedFilteredDataList = [...filteredDataList];
     const indexOfItemToDelete = updatedFilteredDataList.findIndex(
-      (dataItem) => dataItem.id === dataItemId
+      (dataItem) => dataItem.id === itemId
     );
     updatedFilteredDataList.splice(indexOfItemToDelete, 1);
     setFilteredDataList(updatedFilteredDataList);
   };
 
-  const deleteItemFromList = (datatItemId) => {
-    deleteItemFromDataList(datatItemId);
-    deleteItemFromFilteredDataList(datatItemId);
+  /**
+   * Function to delete an item from the displayed list of items
+   * @param {String} itemId - ID of item to be deleted
+   */
+  const deleteSingleItem = (itemId) => {
+    deleteItemFromDataList(itemId);
+    deleteItemFromFilteredDataList(itemId);
+  };
+
+  /**
+   * Function to select (or check) an item from the list displayed
+   * @param {String} itemId - ID of item to be selected
+   */
+  const selectItem = (itemId) => {
+    const updatedItemsSelected = [...selectedItems];
+    const newItemSelectedId = dataList.find(
+      (dataItem) => dataItem.id === itemId
+    ).id;
+    updatedItemsSelected.push(newItemSelectedId);
+    setSelectedItems(updatedItemsSelected);
+  };
+
+  /**
+   * Function to delete selected items from dataList (list fetched from server) in state
+   */
+  const deleteSelectedItemsFromDataList = () => {
+    const updatedDataList = [...dataList];
+    for (let itemId of selectedItems) {
+      const indexOfSelectedItemInDataList = updatedDataList.findIndex(
+        (dataItem) => dataItem.id === itemId
+      );
+      updatedDataList.splice(indexOfSelectedItemInDataList, 1);
+    }
+    dispatchList({
+      type: constants.ACTION_TYPE.DELETE_MULTIPLE,
+      payload: updatedDataList,
+    });
+  };
+
+  /**
+   * Function to delete selected items from filteredDataList (list filtered based on search text) in state
+   */
+  const deleteSelectedItemsFromFilteredDataList = () => {
+    const updatedFilteredDataList = [...filteredDataList];
+    for (let itemId of selectedItems) {
+      const indexOfSelectedItemInDataList = updatedFilteredDataList.findIndex(
+        (dataItem) => dataItem.id === itemId
+      );
+      updatedFilteredDataList.splice(indexOfSelectedItemInDataList, 1);
+    }
+    setFilteredDataList(updatedFilteredDataList);
+  };
+
+  /**
+   * Function to delete selected items from the list displayed
+   */
+  const deleteSelectedItems = () => {
+    deleteSelectedItemsFromDataList();
+    deleteSelectedItemsFromFilteredDataList();
   };
 
   useEffect(() => {
@@ -82,11 +148,14 @@ const AdminPage = () => {
     <main className={styles["admin-page"]}>
       <SearchBar
         placeholder="Search by name, email or role"
-        onSearch={searchItemInList}
+        onSearch={searchItem}
       />
       <AdminList
         list={filteredDataList.length > 0 ? filteredDataList : dataList}
-        onDelete={deleteItemFromList}
+        selectedItems={selectedItems}
+        onSingleDelete={deleteSingleItem}
+        onSelect={selectItem}
+        onMultipleDelete={deleteSelectedItems}
       />
     </main>
   );

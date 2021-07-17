@@ -1,8 +1,17 @@
 import React from "react";
 import TableHeader from "./TableHeader";
 import TableRow from "./TableRow";
+import TableFooter from "./TableFooter";
 
 const TableView = (props) => {
+  const checkIfRowIsSelected = (itemId) => {
+    let isItemPresentInSelectedItems = false;
+    isItemPresentInSelectedItems =
+      props.selectedItems.find((selectedItemId) => selectedItemId === itemId) >
+      -1;
+    return isItemPresentInSelectedItems;
+  };
+
   return (
     <div>
       <TableHeader>
@@ -10,9 +19,16 @@ const TableView = (props) => {
       </TableHeader>
       {props.data.map((dataItem) => {
         return (
-          <TableRow key={dataItem.id} data={dataItem} actions={props.actions} />
+          <TableRow
+            key={dataItem.id}
+            data={dataItem}
+            actions={props.actions}
+            selected={checkIfRowIsSelected(dataItem.id)}
+            onSelect={props.onSelect}
+          />
         );
       })}
+      <TableFooter onDelete={props.onMultipleDelete} />
     </div>
   );
 };
