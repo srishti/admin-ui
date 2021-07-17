@@ -7,8 +7,9 @@ const TableView = (props) => {
   const checkIfRowIsSelected = (itemId) => {
     let isItemPresentInSelectedItems = false;
     isItemPresentInSelectedItems =
-      props.selectedItems.find((selectedItemId) => selectedItemId === itemId) >
-      -1;
+      props.selectedItems.findIndex(
+        (selectedItemId) => selectedItemId === itemId
+      ) > -1;
     return isItemPresentInSelectedItems;
   };
 
@@ -25,6 +26,7 @@ const TableView = (props) => {
             actions={props.actions}
             selected={checkIfRowIsSelected(dataItem.id)}
             onSelect={props.onSelect}
+            onUnselect={props.onUnselect}
           />
         );
       })}

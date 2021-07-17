@@ -80,10 +80,20 @@ const AdminPage = () => {
    */
   const selectItem = (itemId) => {
     const updatedItemsSelected = [...selectedItems];
-    const newItemSelectedId = dataList.find(
-      (dataItem) => dataItem.id === itemId
-    ).id;
-    updatedItemsSelected.push(newItemSelectedId);
+    updatedItemsSelected.push(itemId);
+    setSelectedItems(updatedItemsSelected);
+  };
+
+  /**
+   * Function to unselect (or uncheck) an item from the list displayed
+   * @param {String} itemId - ID of item to be unselected
+   */
+  const unselectItem = (itemId) => {
+    const updatedItemsSelected = [...selectedItems];
+    const unselectedItemIndexInDataList = dataList.findIndex(
+      (dataItem) => dataItem === itemId
+    );
+    updatedItemsSelected.splice(unselectedItemIndexInDataList, 1);
     setSelectedItems(updatedItemsSelected);
   };
 
@@ -155,6 +165,7 @@ const AdminPage = () => {
         selectedItems={selectedItems}
         onSingleDelete={deleteSingleItem}
         onSelect={selectItem}
+        onUnselect={unselectItem}
         onMultipleDelete={deleteSelectedItems}
       />
     </main>

@@ -30,6 +30,7 @@ const AdminList = (props) => {
       actions={actions}
       selectedItems={props.selectedItems}
       onSelect={props.onSelect}
+      onUnselect={props.onUnselect}
       onMultipleDelete={props.onMultipleDelete}
     />
   );

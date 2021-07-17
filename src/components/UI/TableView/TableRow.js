@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useRef } from "react";
 import styles from "./TableRow.module.css";
 
 const TableRow = (props) => {
+  const checkBoxRef = useRef(null);
+
   const { id, name, email, role } = props.data;
 
   /**
@@ -12,16 +14,17 @@ const TableRow = (props) => {
     currentAction.onClick(id); // id corresponds to the id of the data item corresponding to the action clicked
   };
 
-  const checkBoxSelectHandler = () => {
-    props.onSelect(id);
+  const checkBoxToggleHandler = () => {
+    checkBoxRef.current.checked ? props.onSelect(id) : props.onUnselect(id);
   };
 
   return (
     <ul className={styles.row}>
       <input
         type="checkbox"
-        onChange={checkBoxSelectHandler}
+        onChange={checkBoxToggleHandler}
         checked={props.selected}
+        ref={checkBoxRef}
       />
       <li>{name}</li>
       <li>{email}</li>
