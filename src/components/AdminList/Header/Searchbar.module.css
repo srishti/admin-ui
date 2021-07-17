@@ -1,0 +1,12 @@
+.searchbar {
+  padding: 0.5rem 1rem;
+  width: 100%;
+  font-size: 0.95rem;
+  border: 1px solid #999;
+  outline: none;
+}
+
+.searchbar::placeholder {
+  color: #999;
+  font-size: 0.95rem;
+}

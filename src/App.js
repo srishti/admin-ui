@@ -1,9 +1,13 @@
 import React from "react";
+import Searchbar from "./components/AdminList/Header/Searchbar";
+import styles from "./App.module.css";
 
 const App = () => {
   return (
-    <h1>Admin UI</h1>
+    <main className={styles.app}>
+      <Searchbar placeholder="Search by name, email or role" />
+    </main>
   );
-}
+};
 
 export default App;
