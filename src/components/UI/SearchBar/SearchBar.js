@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import styles from "./Searchbar.module.css";
+import styles from "./SearchBar.module.css";
 
-const Searchbar = (props) => {
+const SearchBar = (props) => {
   const [searchText, setSearchText] = useState("");
 
   const changeSearchTextHandler = (event) => {
@@ -30,4 +30,4 @@ const Searchbar = (props) => {
   );
 };
 
-export default Searchbar;
+export default SearchBar;
