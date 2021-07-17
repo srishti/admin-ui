@@ -6,15 +6,16 @@ css variables
 :root {
   /* global colors */
   --clr-primary: blue;
-  --clr-black: #222;
+  --clr-black: #444;
   --clr-white: #fff;
   --clr-red: #f14e4e;
-  --clr-gray: #aaa;
+  --clr-dark-gray: #aaa;
+  --clr-light-gray: #ddd;
 
   /* fonts */
-  --font-size: 1rem;
-  --font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
-    sans-serif;
+  --font-size: 0.875rem;
+  --font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
 
 /* 
@@ -29,5 +30,7 @@ css resets
 body {
   margin: 0;
   font-size: var(--font-size);
+  font-family: var(--font-family);
+  color: var(--clr-black);
   font-family: var(--font-family);
 }
