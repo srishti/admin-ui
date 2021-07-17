@@ -9,4 +9,5 @@ export const API_URL =
 
 export const ACTION_TYPE = {
   VIEW: "VIEW",
+  DELETE: "EDIT",
 };

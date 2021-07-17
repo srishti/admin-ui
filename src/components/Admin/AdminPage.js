@@ -8,6 +8,7 @@ import styles from "./AdminPage.module.css";
 const listReducer = (state, action) => {
   switch (action.type) {
     case constants.ACTION_TYPE.VIEW:
+    case constants.ACTION_TYPE.DELETE:
       return action.payload;
     default:
       return state;
@@ -15,22 +16,48 @@ const listReducer = (state, action) => {
 };
 
 const AdminPage = () => {
-  const [listData, listDispatch] = useReducer(listReducer, []); // displays data list fetched from server
-  const [filteredListData, setFilteredListData] = useState([]); // displays data list based on text searched by user
+  const [dataList, dispatchList] = useReducer(listReducer, []); // displays data list fetched from server
+  const [filteredDataList, setFilteredDataList] = useState([]); // displays data list based on text searched by user
 
   /**
    * Function to search for a name or email or role in a list of data
    * @param {String} textToSearch
    */
-  const searchList = (textToSearch) => {
+  const searchItemInList = (textToSearch) => {
     // filter list based on whether name or email or role matches text entered in search box
-    const filteredList = listData.filter(
+    const filteredDataList = dataList.filter(
       (listItem) =>
         utils.checkIfCaseInsensitiveSubstring(listItem.name, textToSearch) ||
         utils.checkIfCaseInsensitiveSubstring(listItem.email, textToSearch) ||
         utils.checkIfCaseInsensitiveSubstring(listItem.role, textToSearch)
     );
-    setFilteredListData(filteredList);
+    setFilteredDataList(filteredDataList);
+  };
+
+  const deleteItemFromDataList = (dataItemId) => {
+    const updatedDataList = [...dataList];
+    const indexOfItemToDelete = updatedDataList.findIndex(
+      (dataItem) => dataItem.id === dataItemId
+    );
+    updatedDataList.splice(indexOfItemToDelete, 1);
+    dispatchList({
+      type: constants.ACTION_TYPE.DELETE,
+      payload: updatedDataList,
+    });
+  };
+
+  const deleteItemFromFilteredDataList = (dataItemId) => {
+    const updatedFilteredDataList = [...filteredDataList];
+    const indexOfItemToDelete = updatedFilteredDataList.findIndex(
+      (dataItem) => dataItem.id === dataItemId
+    );
+    updatedFilteredDataList.splice(indexOfItemToDelete, 1);
+    setFilteredDataList(updatedFilteredDataList);
+  };
+
+  const deleteItemFromList = (datatItemId) => {
+    deleteItemFromDataList(datatItemId);
+    deleteItemFromFilteredDataList(datatItemId);
   };
 
   useEffect(() => {
@@ -42,23 +69,24 @@ const AdminPage = () => {
       } catch (error) {
         console.log(error);
       }
-      listDispatch({
+      dispatchList({
         type: constants.ACTION_TYPE.VIEW,
         payload: jsonResponseData,
       });
     };
 
     fetchListDataFromServer();
-  }, [listData]);
+  }, []);
 
   return (
     <main className={styles["admin-page"]}>
       <SearchBar
         placeholder="Search by name, email or role"
-        onSearch={searchList}
+        onSearch={searchItemInList}
       />
       <AdminList
-        list={filteredListData.length > 0 ? filteredListData : listData}
+        list={filteredDataList.length > 0 ? filteredDataList : dataList}
+        onDelete={deleteItemFromList}
       />
     </main>
   );

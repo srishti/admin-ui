@@ -9,7 +9,9 @@ const TableView = (props) => {
         <TableRow data={props.labels} />
       </TableHeader>
       {props.data.map((dataItem) => {
-        return <TableRow key={dataItem.id} data={dataItem} />;
+        return (
+          <TableRow key={dataItem.id} data={dataItem} actions={props.actions} />
+        );
       })}
     </div>
   );
