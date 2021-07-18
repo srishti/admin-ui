@@ -10,11 +10,14 @@ const TableFooter = (props) => {
     <footer className={styles["table-footer"]}>
       <Button
         className={styles["table-footer-button"]}
-        onClick={props.onDelete}
+        onClick={props.onDeleteMultipleItems}
       >
         Delete Selected
       </Button>
-      <Pagination itemCount={props.itemCount} />
+      <Pagination
+        itemCount={props.itemCount}
+        onSelectPage={props.onSelectPage}
+      />
     </footer>
   );
 };

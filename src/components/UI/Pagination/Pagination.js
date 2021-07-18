@@ -9,51 +9,50 @@ import styles from "./Pagination.module.css";
  * @return {Number} - number of pages to be displayed
  */
 const getPageCount = (itemCount) => {
-  return Math.ceil(itemCount / constants.PAGE_COUNT);
+  return Math.ceil(itemCount / constants.PAGE_LIMIT);
 };
 
 const Pagination = (props) => {
   console.log("[Pagination] rendered");
 
   const [pageCount, setPageCount] = useState(null);
-  const [selectedPage, setSelectedPage] = useState(1);
-
-  /**
-   * Function to go to the first page in the pagination list
-   */
-  const goToFirstPage = () => {
-    setSelectedPage(1);
-  };
-
-  /**
-   * Function to go to the last page in the pagination list
-   */
-  const goToLastPage = () => {
-    setSelectedPage(pageCount);
-  };
-
-  /**
-   * Function to go to the previous page (in relation to the currently selected page) in the pagination list
-   */
-  const goToPreviousPage = () => {
-    setSelectedPage((prevState) => (prevState > 1 ? prevState - 1 : prevState));
-  };
-
-  /**
-   * Function to go to the next page (in relation to the currently selected page) in the pagination list
-   */
-  const goToNextPage = () => {
-    setSelectedPage((prevState) =>
-      prevState < pageCount ? prevState + 1 : prevState
-    );
-  };
+  const [currentPage, setCurrentPage] = useState(1);
 
   /**
    * Function as event handler for selecting a page
    * @param {*} pageNumber - page number to be selected
    */
   const selectPage = (pageNumber) => {
-    setSelectedPage(+pageNumber);
+    setCurrentPage(+pageNumber);
+    props.onSelectPage(+pageNumber);
+  };
+
+  /**
+   * Function to go to the first page in the pagination list
+   */
+  const goToFirstPage = () => {
+    selectPage(1);
+  };
+
+  /**
+   * Function to go to the last page in the pagination list
+   */
+  const goToLastPage = () => {
+    selectPage(pageCount);
+  };
+
+  /**
+   * Function to go to the previous page (in relation to the currently selected page) in the pagination list
+   */
+  const goToPreviousPage = () => {
+    selectPage(currentPage - 1);
+  };
+
+  /**
+   * Function to go to the next page (in relation to the currently selected page) in the pagination list
+   */
+  const goToNextPage = () => {
+    selectPage(currentPage + 1);
   };
 
   /**
@@ -65,7 +64,7 @@ const Pagination = (props) => {
 
     for (let i = 1; i <= pageCount; i++) {
       pages.push(
-        <PageButton key={i} selected={selectedPage === i} onClick={selectPage}>
+        <PageButton key={i} selected={currentPage === i} onClick={selectPage}>
           {i}
         </PageButton>
       );
@@ -79,17 +78,17 @@ const Pagination = (props) => {
 
   return (
     <div className={styles.pagination}>
-      <PageButton onClick={goToFirstPage} disabled={selectedPage <= 1}>
+      <PageButton onClick={goToFirstPage} disabled={currentPage <= 1}>
         {"<<"}
       </PageButton>
-      <PageButton onClick={goToPreviousPage} disabled={selectedPage <= 1}>
+      <PageButton onClick={goToPreviousPage} disabled={currentPage <= 1}>
         {"<"}
       </PageButton>
       {renderPages()}
-      <PageButton onClick={goToNextPage} disabled={selectedPage === pageCount}>
+      <PageButton onClick={goToNextPage} disabled={currentPage === pageCount}>
         {">"}
       </PageButton>
-      <PageButton onClick={goToLastPage} disabled={selectedPage === pageCount}>
+      <PageButton onClick={goToLastPage} disabled={currentPage === pageCount}>
         {">>"}
       </PageButton>
     </div>

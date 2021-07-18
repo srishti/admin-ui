@@ -22,29 +22,50 @@ const AdminPage = () => {
 
   const [dataList, dispatchList] = useReducer(listReducer, []); // keep track of data list fetched from server
   const [filteredDataList, setFilteredDataList] = useState([]); // keep track of data list based on text searched by user
+  const [pageDataList, setPageDataList] = useState([]); // keep track of data list to be displayed on current page
   const [selectedItems, setSelectedItems] = useState([]); // keeps track of IDs of items selected by user by checking the checkbox
+
+  /**
+   * Function to display data on current page
+   * @param {Number} currentPageNumber - page currently selected by user
+   */
+  const displayCurrentPageData = (currentPageNumber) => {
+    const startIndex = (currentPageNumber - 1) * constants.PAGE_LIMIT;
+    const endIndex = startIndex + constants.PAGE_LIMIT;
+    let newPageDataList = [];
+    if (filteredDataList.length > 0) {
+      newPageDataList = filteredDataList.slice(startIndex, endIndex);
+    } else if (dataList.length > 0) {
+      newPageDataList = dataList.slice(startIndex, endIndex);
+    }
+    setPageDataList(newPageDataList);
+  };
 
   /**
    * Function to search for a name or email or role in a list of data
    * @param {String} textToSearch
    */
   const searchItem = (textToSearch) => {
-    // filter list based on whether name or email or role matches text entered in search box
-    const filteredDataList = dataList.filter(
-      (listItem) =>
-        utils.checkIfCaseInsensitiveSubstring(listItem.name, textToSearch) ||
-        utils.checkIfCaseInsensitiveSubstring(listItem.email, textToSearch) ||
-        utils.checkIfCaseInsensitiveSubstring(listItem.role, textToSearch)
-    );
-    setFilteredDataList(filteredDataList);
+    if (textToSearch) {
+      // filter list based on whether name or email or role matches text entered in search box
+      const filteredDataList = dataList.filter(
+        (listItem) =>
+          utils.checkIfCaseInsensitiveSubstring(listItem.name, textToSearch) ||
+          utils.checkIfCaseInsensitiveSubstring(listItem.email, textToSearch) ||
+          utils.checkIfCaseInsensitiveSubstring(listItem.role, textToSearch)
+      );
+      setFilteredDataList(filteredDataList);
+    } else {
+      setFilteredDataList([]);
+    }
   };
 
   /**
-   * Function to edit an item in the dataList (list fetched from server) in state
+   * Function to edit an item in the displayed list of items
    * @param {String} itemId - ID of item to be edited
    * @param {Object} newItemData - edited data for the item
    */
-  const editItemInDataList = (itemId, newItemData) => {
+  const editItem = (itemId, newItemData) => {
     const updatedDataList = [...dataList];
     if (updatedDataList.length <= 0) {
       return;
@@ -67,47 +88,10 @@ const AdminPage = () => {
   };
 
   /**
-   * Function to edit an item in the filteredDataList (list filtered based on search text) in state
-   * @param {String} itemId - ID of item to be edited
-   * @param {Object} newItemData - edited data for the item
-   */
-  const editItemInFilteredDataList = (itemId, newItemData) => {
-    const updatedFilteredDataList = [...filteredDataList];
-    if (updatedFilteredDataList.length <= 0) {
-      return;
-    }
-    const indexOfItemToEdit = utils.getElementIndexById(
-      updatedFilteredDataList,
-      itemId
-    );
-    if (indexOfItemToEdit > -1) {
-      const existingItemData = updatedFilteredDataList[indexOfItemToEdit];
-      updatedFilteredDataList[indexOfItemToEdit] = {
-        ...existingItemData,
-        ...newItemData,
-      };
-    }
-    dispatchList({
-      type: constants.ACTION_TYPE.EDIT,
-      payload: updatedFilteredDataList,
-    });
-  };
-
-  /**
-   * Function to edit an item in the displayed list of items
-   * @param {String} itemId - ID of item to be edited
-   * @param {Object} newItemData - edited data for the item
-   */
-  const editItem = (itemId, newItemData) => {
-    editItemInDataList(itemId, newItemData);
-    editItemInFilteredDataList(itemId, newItemData);
-  };
-
-  /**
-   * Function to delete an item from the dataList (list fetched from server) in state
+   * Function to delete single item from the dataList (list fetched from server) in state
    * @param {String} itemId - ID of item to be deleted
    */
-  const deleteItemFromDataList = (itemId) => {
+  const deleteSingleItem = (itemId) => {
     const updatedDataList = [...dataList];
     if (updatedDataList.length <= 0) {
       return;
@@ -123,34 +107,6 @@ const AdminPage = () => {
       type: constants.ACTION_TYPE.DELETE_SINGLE,
       payload: updatedDataList,
     });
-  };
-
-  /**
-   * Function to delete an item from the filteredDataList (list filtered based on search text) in state
-   * @param {String} itemId - ID of item to be deleted
-   */
-  const deleteItemFromFilteredDataList = (itemId) => {
-    const updatedFilteredDataList = [...filteredDataList];
-    if (updatedFilteredDataList.length <= 0) {
-      return;
-    }
-    const indexOfItemToDelete = utils.getElementIndexById(
-      updatedFilteredDataList,
-      itemId
-    );
-    if (indexOfItemToDelete > -1) {
-      updatedFilteredDataList.splice(indexOfItemToDelete, 1);
-    }
-    setFilteredDataList(updatedFilteredDataList);
-  };
-
-  /**
-   * Function to delete an item from the displayed list of items
-   * @param {String} itemId - ID of item to be deleted
-   */
-  const deleteSingleItem = (itemId) => {
-    deleteItemFromDataList(itemId);
-    deleteItemFromFilteredDataList(itemId);
   };
 
   /**
@@ -172,7 +128,7 @@ const AdminPage = () => {
     if (updatedItemsSelected.length <= 0) {
       return;
     }
-    const unselectedItemIndexInDataList = dataList.findIndex(
+    const unselectedItemIndexInDataList = pageDataList.findIndex(
       (dataItem) => dataItem === itemId
     );
     updatedItemsSelected.splice(unselectedItemIndexInDataList, 1);
@@ -180,9 +136,9 @@ const AdminPage = () => {
   };
 
   /**
-   * Function to delete selected items from dataList (list fetched from server) in state
+   * Function to delete selected items from the list displayed
    */
-  const deleteSelectedItemsFromDataList = () => {
+  const deleteSelectedItems = () => {
     const updatedDataList = [...dataList];
     if (updatedDataList.length <= 0) {
       return;
@@ -200,34 +156,6 @@ const AdminPage = () => {
       type: constants.ACTION_TYPE.DELETE_MULTIPLE,
       payload: updatedDataList,
     });
-  };
-
-  /**
-   * Function to delete selected items from filteredDataList (list filtered based on search text) in state
-   */
-  const deleteSelectedItemsFromFilteredDataList = () => {
-    const updatedFilteredDataList = [...filteredDataList];
-    if (updatedFilteredDataList.length <= 0) {
-      return;
-    }
-    for (let itemId of selectedItems) {
-      const indexOfSelectedItemInDataList = utils.getElementIndexById(
-        updatedFilteredDataList,
-        itemId
-      );
-      if (indexOfSelectedItemInDataList > -1) {
-        updatedFilteredDataList.splice(indexOfSelectedItemInDataList, 1);
-      }
-    }
-    setFilteredDataList(updatedFilteredDataList);
-  };
-
-  /**
-   * Function to delete selected items from the list displayed
-   */
-  const deleteSelectedItems = () => {
-    deleteSelectedItemsFromDataList();
-    deleteSelectedItemsFromFilteredDataList();
   };
 
   useEffect(() => {
@@ -248,6 +176,10 @@ const AdminPage = () => {
     fetchListDataFromServer();
   }, []);
 
+  useEffect(() => {
+    displayCurrentPageData(1);
+  }, [dataList, filteredDataList]);
+
   return (
     <main className={styles["admin-page"]}>
       <SearchBar
@@ -255,13 +187,19 @@ const AdminPage = () => {
         onSearch={searchItem}
       />
       <AdminList
-        list={filteredDataList.length > 0 ? filteredDataList : dataList}
+        list={pageDataList}
         selectedItems={selectedItems}
+        itemCount={
+          filteredDataList.length > 0
+            ? filteredDataList.length
+            : dataList.length
+        }
         onEdit={editItem}
-        onSingleDelete={deleteSingleItem}
-        onSelect={selectItem}
-        onUnselect={unselectItem}
-        onMultipleDelete={deleteSelectedItems}
+        onDeleteSingleItem={deleteSingleItem}
+        onDeleteMultipleItems={deleteSelectedItems}
+        onSelectItem={selectItem}
+        onUnselectItem={unselectItem}
+        onSelectPage={displayCurrentPageData}
       />
     </main>
   );

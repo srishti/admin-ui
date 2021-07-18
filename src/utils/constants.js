@@ -14,4 +14,4 @@ export const ACTION_TYPE = {
   DELETE_MULTIPLE: "DELETE_MULTIPLE",
 };
 
-export const PAGE_COUNT = 10;
+export const PAGE_LIMIT = 10;

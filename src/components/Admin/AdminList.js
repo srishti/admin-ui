@@ -19,7 +19,7 @@ const AdminList = (props) => {
     {
       name: "delete",
       iconClass: `${icons.FA_ICON_PREFIX}${icons.DELETE}`,
-      onClick: props.onSingleDelete,
+      onClick: props.onDeleteSingleItem,
     },
   ];
 
@@ -27,12 +27,14 @@ const AdminList = (props) => {
     <TableView
       data={props.list}
       labels={headerLabels}
+      itemCount={props.itemCount}
       actions={actions}
       selectedItems={props.selectedItems}
       onEdit={props.onEdit}
-      onSelect={props.onSelect}
-      onUnselect={props.onUnselect}
-      onMultipleDelete={props.onMultipleDelete}
+      onSelectItem={props.onSelectItem}
+      onUnselectItem={props.onUnselectItem}
+      onDeleteMultipleItems={props.onDeleteMultipleItems}
+      onSelectPage={props.onSelectPage}
     />
   );
 };

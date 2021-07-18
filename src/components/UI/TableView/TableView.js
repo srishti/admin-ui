@@ -28,14 +28,15 @@ const TableView = (props) => {
             actions={props.actions}
             selected={checkIfRowIsSelected(dataItem.id)}
             onEdit={props.onEdit}
-            onSelect={props.onSelect}
-            onUnselect={props.onUnselect}
+            onSelectItem={props.onSelectItem}
+            onUnselectItem={props.onUnselectItem}
           />
         );
       })}
       <TableFooter
-        onDelete={props.onMultipleDelete}
-        itemCount={props.data.length}
+        itemCount={props.itemCount}
+        onDeleteMultipleItems={props.onDeleteMultipleItems}
+        onSelectPage={props.onSelectPage}
       />
     </div>
   );

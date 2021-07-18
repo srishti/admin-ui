@@ -32,7 +32,7 @@ const TableRow = (props) => {
         };
 
       case ACTION_TYPE.TOGGLE_SELECTED:
-        state.isSelected ? props.onUnselect(id) : props.onSelect(id);
+        state.isSelected ? props.onUnselectItem(id) : props.onSelectItem(id);
         return {
           ...state,
           isSelected: !state.isSelected,
