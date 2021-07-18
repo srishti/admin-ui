@@ -5,25 +5,23 @@ import styles from "./Pagination.module.css";
 
 /**
  * Function to get number of pages to be displayed
- * @param {Number} itemCount - number of items displayed in the table view
+ * @param {Number} itemsCount - number of items displayed in the table view
  * @return {Number} - number of pages to be displayed
  */
-const getPageCount = (itemCount) => {
-  return Math.ceil(itemCount / constants.PAGE_LIMIT);
+const getPageCount = (itemsCount) => {
+  return Math.ceil(itemsCount / constants.PAGE_LIMIT);
 };
 
 const Pagination = (props) => {
   console.log("[Pagination] rendered");
 
   const [pageCount, setPageCount] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
 
   /**
    * Function as event handler for selecting a page
    * @param {*} pageNumber - page number to be selected
    */
   const selectPage = (pageNumber) => {
-    setCurrentPage(+pageNumber);
     props.onSelectPage(+pageNumber);
   };
 
@@ -45,14 +43,14 @@ const Pagination = (props) => {
    * Function to go to the previous page (in relation to the currently selected page) in the pagination list
    */
   const goToPreviousPage = () => {
-    selectPage(currentPage - 1);
+    selectPage(props.currentPage - 1);
   };
 
   /**
    * Function to go to the next page (in relation to the currently selected page) in the pagination list
    */
   const goToNextPage = () => {
-    selectPage(currentPage + 1);
+    selectPage(props.currentPage + 1);
   };
 
   /**
@@ -63,8 +61,9 @@ const Pagination = (props) => {
     let pages = [];
 
     for (let i = 1; i <= pageCount; i++) {
+      const isCurrentPage = props.currentPage === i;
       pages.push(
-        <PageButton key={i} selected={currentPage === i} onClick={selectPage}>
+        <PageButton key={i} selected={isCurrentPage} onClick={selectPage}>
           {i}
         </PageButton>
       );
@@ -73,22 +72,28 @@ const Pagination = (props) => {
   };
 
   useEffect(() => {
-    setPageCount(getPageCount(props.itemCount));
-  }, [props.itemCount]);
+    setPageCount(getPageCount(props.itemsCount));
+  }, [props.itemsCount]);
 
   return (
     <div className={styles.pagination}>
-      <PageButton onClick={goToFirstPage} disabled={currentPage <= 1}>
+      <PageButton onClick={goToFirstPage} disabled={props.currentPage <= 1}>
         {"<<"}
       </PageButton>
-      <PageButton onClick={goToPreviousPage} disabled={currentPage <= 1}>
+      <PageButton onClick={goToPreviousPage} disabled={props.currentPage <= 1}>
         {"<"}
       </PageButton>
       {renderPages()}
-      <PageButton onClick={goToNextPage} disabled={currentPage === pageCount}>
+      <PageButton
+        onClick={goToNextPage}
+        disabled={props.currentPage === pageCount}
+      >
         {">"}
       </PageButton>
-      <PageButton onClick={goToLastPage} disabled={currentPage === pageCount}>
+      <PageButton
+        onClick={goToLastPage}
+        disabled={props.currentPage === pageCount}
+      >
         {">>"}
       </PageButton>
     </div>

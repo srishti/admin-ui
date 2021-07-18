@@ -28,6 +28,10 @@
   margin-right: 0.5rem;
 }
 
+.action-group.hide {
+  display: none;
+}
+
 .action {
   padding: 0.5rem;
   cursor: pointer;

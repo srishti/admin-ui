@@ -1,205 +1,171 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useEffect, useState } from "react";
 import SearchBar from "../UI/SearchBar/SearchBar";
-import AdminList from "./AdminList";
+import UsersList from "./UsersList";
 import * as constants from "../../utils/constants";
 import * as utils from "../../utils/functions";
 import styles from "./AdminPage.module.css";
 
-const listReducer = (state, action) => {
-  switch (action.type) {
-    case constants.ACTION_TYPE.VIEW:
-    case constants.ACTION_TYPE.DELETE_SINGLE:
-    case constants.ACTION_TYPE.DELETE_MULTIPLE:
-    case constants.ACTION_TYPE.EDIT:
-      return action.payload;
-    default:
-      return state;
-  }
-};
-
 const AdminPage = () => {
   console.log("[AdminPage] rendered");
 
-  const [dataList, dispatchList] = useReducer(listReducer, []); // keep track of data list fetched from server
-  const [filteredDataList, setFilteredDataList] = useState([]); // keep track of data list based on text searched by user
-  const [pageDataList, setPageDataList] = useState([]); // keep track of data list to be displayed on current page
-  const [selectedItems, setSelectedItems] = useState([]); // keeps track of IDs of items selected by user by checking the checkbox
+  const [users, setUsers] = useState([]); // keeps track of users list fetched from server
+  const [filteredUsers, setFilteredUsers] = useState([]); // keeps track of users list filtered by admin based on search criterion
+  const [pageUsers, setPageUsers] = useState([]); // keeps track of users list displayed on current page
+  const [selectedUserIdsList, setSelectedUserIdsList] = useState([]); // keeps track of user IDs selected by admin by checking the checkbox
+  const [currentPage, setCurrentPage] = useState(1);
 
   /**
-   * Function to display data on current page
-   * @param {Number} currentPageNumber - page currently selected by user
+   * Function to display users on current page
+   * @param {Number} currentPageNumber - page currently selected by admin
    */
-  const displayCurrentPageData = (currentPageNumber) => {
+  const displayUsersOnCurrentPage = (currentPageNumber) => {
+    setCurrentPage(currentPageNumber);
+
     const startIndex = (currentPageNumber - 1) * constants.PAGE_LIMIT;
     const endIndex = startIndex + constants.PAGE_LIMIT;
-    let newPageDataList = [];
-    if (filteredDataList.length > 0) {
-      newPageDataList = filteredDataList.slice(startIndex, endIndex);
-    } else if (dataList.length > 0) {
-      newPageDataList = dataList.slice(startIndex, endIndex);
+    let newPageUsers = [];
+    if (filteredUsers.length > 0) {
+      newPageUsers = filteredUsers.slice(startIndex, endIndex);
+    } else if (users.length > 0) {
+      newPageUsers = users.slice(startIndex, endIndex);
     }
-    setPageDataList(newPageDataList);
+    setPageUsers(newPageUsers);
   };
 
   /**
-   * Function to search for a name or email or role in a list of data
+   * Function to search for a name or email or role in a list of users
    * @param {String} textToSearch
    */
-  const searchItem = (textToSearch) => {
+  const searchUser = (textToSearch) => {
     if (textToSearch) {
       // filter list based on whether name or email or role matches text entered in search box
-      const filteredDataList = dataList.filter(
-        (listItem) =>
-          utils.checkIfCaseInsensitiveSubstring(listItem.name, textToSearch) ||
-          utils.checkIfCaseInsensitiveSubstring(listItem.email, textToSearch) ||
-          utils.checkIfCaseInsensitiveSubstring(listItem.role, textToSearch)
+      const updatedFilteredUsers = users.filter(
+        (user) =>
+          utils.checkIfCaseInsensitiveSubstring(user.name, textToSearch) ||
+          utils.checkIfCaseInsensitiveSubstring(user.email, textToSearch) ||
+          utils.checkIfCaseInsensitiveSubstring(user.role, textToSearch)
       );
-      setFilteredDataList(filteredDataList);
+      setFilteredUsers(updatedFilteredUsers);
     } else {
-      setFilteredDataList([]);
+      setFilteredUsers([]);
     }
   };
 
   /**
-   * Function to edit an item in the displayed list of items
-   * @param {String} itemId - ID of item to be edited
-   * @param {Object} newItemData - edited data for the item
+   * Function to edit user data in the list of users
+   * @param {String} userId - ID of user to be edited
+   * @param {Object} newUserData - new data for the user which needs to be merged with the existing user data
    */
-  const editItem = (itemId, newItemData) => {
-    const updatedDataList = [...dataList];
-    if (updatedDataList.length <= 0) {
-      return;
-    }
-    const indexOfItemToEdit = utils.getElementIndexById(
-      updatedDataList,
-      itemId
+  const editUser = (userId, newUserData) => {
+    setUsers(utils.editOrDeleteElementFromArray(users, userId, newUserData));
+    setFilteredUsers(
+      utils.editOrDeleteElementFromArray(filteredUsers, userId, newUserData)
     );
-    if (indexOfItemToEdit > -1) {
-      const existingItemData = updatedDataList[indexOfItemToEdit];
-      updatedDataList[indexOfItemToEdit] = {
-        ...existingItemData,
-        ...newItemData,
-      };
-    }
-    dispatchList({
-      type: constants.ACTION_TYPE.EDIT,
-      payload: updatedDataList,
-    });
   };
 
   /**
-   * Function to delete single item from the dataList (list fetched from server) in state
-   * @param {String} itemId - ID of item to be deleted
+   * Function to delete single user from the list of users
+   * @param {String} userId - ID of user to be deleted
    */
-  const deleteSingleItem = (itemId) => {
-    const updatedDataList = [...dataList];
-    if (updatedDataList.length <= 0) {
-      return;
-    }
-    const indexOfItemToDelete = utils.getElementIndexById(
-      updatedDataList,
-      itemId
-    );
-    if (indexOfItemToDelete > -1) {
-      updatedDataList.splice(indexOfItemToDelete, 1);
-    }
-    dispatchList({
-      type: constants.ACTION_TYPE.DELETE_SINGLE,
-      payload: updatedDataList,
-    });
+  const deleteSingleUser = (userId) => {
+    setUsers(utils.editOrDeleteElementFromArray(users, userId));
+    setFilteredUsers(utils.editOrDeleteElementFromArray(filteredUsers, userId));
   };
 
   /**
-   * Function to select (or check) an item from the list displayed
-   * @param {String} itemId - ID of item to be selected
+   * Function to delete multiple selected users from the list of users
    */
-  const selectItem = (itemId) => {
-    const updatedItemsSelected = [...selectedItems];
-    updatedItemsSelected.push(itemId);
-    setSelectedItems(updatedItemsSelected);
-  };
-
-  /**
-   * Function to unselect (or uncheck) an item from the list displayed
-   * @param {String} itemId - ID of item to be unselected
-   */
-  const unselectItem = (itemId) => {
-    const updatedItemsSelected = [...selectedItems];
-    if (updatedItemsSelected.length <= 0) {
-      return;
-    }
-    const unselectedItemIndexInDataList = pageDataList.findIndex(
-      (dataItem) => dataItem === itemId
-    );
-    updatedItemsSelected.splice(unselectedItemIndexInDataList, 1);
-    setSelectedItems(updatedItemsSelected);
-  };
-
-  /**
-   * Function to delete selected items from the list displayed
-   */
-  const deleteSelectedItems = () => {
-    const updatedDataList = [...dataList];
-    if (updatedDataList.length <= 0) {
-      return;
-    }
-    for (let itemId of selectedItems) {
-      const indexOfSelectedItemInDataList = utils.getElementIndexById(
-        updatedDataList,
-        itemId
+  const deleteMultipleUsers = () => {
+    let updatedUsers = [...users];
+    let updatedFilteredUsers = [...filteredUsers];
+    for (let userId of selectedUserIdsList) {
+      updatedUsers = utils.editOrDeleteElementFromArray(updatedUsers, userId);
+      updatedFilteredUsers = utils.editOrDeleteElementFromArray(
+        updatedFilteredUsers,
+        userId
       );
-      if (indexOfSelectedItemInDataList > -1) {
-        updatedDataList.splice(indexOfSelectedItemInDataList, 1);
-      }
     }
-    dispatchList({
-      type: constants.ACTION_TYPE.DELETE_MULTIPLE,
-      payload: updatedDataList,
-    });
+    setUsers(updatedUsers);
+    setFilteredUsers(updatedFilteredUsers);
+  };
+
+  /**
+   * Function to select (or check) a user from the list of users
+   * @param {String} userId - ID of user to be selected
+   */
+  const selectUser = (userId) => {
+    const updatedUserIdsList = [...selectedUserIdsList];
+    updatedUserIdsList.push(userId);
+    setSelectedUserIdsList(updatedUserIdsList);
+  };
+
+  /**
+   * Function to select (or check) all users displayed on the current page
+   */
+  const selectAllCurrentPageUsers = () => {
+    const updatedUserIdsList = [];
+    for (let user of pageUsers) {
+      updatedUserIdsList.push(user.id);
+    }
+    setSelectedUserIdsList(updatedUserIdsList);
+  };
+
+  /**
+   * Function to unselect (or uncheck) a user from the list of users
+   * @param {String} userId - ID of user to be unselected
+   */
+  const unselectUser = (userId) => {
+    const updatedUserIdsList = [...selectedUserIdsList];
+    if (updatedUserIdsList.length <= 0) {
+      return;
+    }
+    const indexOfUserToUnselectInUsersList = utils.getElementIndexById(
+      pageUsers,
+      userId
+    );
+    updatedUserIdsList.splice(indexOfUserToUnselectInUsersList, 1);
+    setSelectedUserIdsList(updatedUserIdsList);
   };
 
   useEffect(() => {
-    const fetchListDataFromServer = async () => {
-      let jsonResponseData = null;
+    const fetchUsers = async () => {
+      let jsonResponse = null;
       try {
-        const responseData = await fetch(constants.API_URL);
-        jsonResponseData = await responseData.json();
+        const response = await fetch(constants.API_URL);
+        jsonResponse = await response.json();
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
-      dispatchList({
-        type: constants.ACTION_TYPE.VIEW,
-        payload: jsonResponseData,
-      });
+      setUsers(jsonResponse);
     };
 
-    fetchListDataFromServer();
+    fetchUsers();
   }, []);
 
   useEffect(() => {
-    displayCurrentPageData(1);
-  }, [dataList, filteredDataList]);
+    displayUsersOnCurrentPage(1);
+  }, [users, filteredUsers]);
 
   return (
     <main className={styles["admin-page"]}>
       <SearchBar
         placeholder="Search by name, email or role"
-        onSearch={searchItem}
+        onSearch={searchUser}
       />
-      <AdminList
-        list={pageDataList}
-        selectedItems={selectedItems}
-        itemCount={
-          filteredDataList.length > 0
-            ? filteredDataList.length
-            : dataList.length
+      <UsersList
+        userData={pageUsers}
+        selectedUsersIds={selectedUserIdsList}
+        usersCount={
+          filteredUsers.length > 0 ? filteredUsers.length : users.length
         }
-        onEdit={editItem}
-        onDeleteSingleItem={deleteSingleItem}
-        onDeleteMultipleItems={deleteSelectedItems}
-        onSelectItem={selectItem}
-        onUnselectItem={unselectItem}
-        onSelectPage={displayCurrentPageData}
+        currentPage={currentPage}
+        onEditUser={editUser}
+        onDeleteSingleUser={deleteSingleUser}
+        onDeleteMultipleUsers={deleteMultipleUsers}
+        onSelectUser={selectUser}
+        onSelectCurrentPageUsers={selectAllCurrentPageUsers}
+        onUnselectUser={unselectUser}
+        onSelectPage={displayUsersOnCurrentPage}
       />
     </main>
   );

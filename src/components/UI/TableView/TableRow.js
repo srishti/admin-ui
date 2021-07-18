@@ -1,4 +1,5 @@
 import React, { useReducer } from "react";
+import * as icons from "../../../utils/icons";
 import styles from "./TableRow.module.css";
 
 const ACTION_TYPE = {
@@ -22,6 +23,12 @@ const TableRow = (props) => {
     isSelected: false,
   };
 
+  /**
+   * Reducer function to be invoked when corresponding dispatch function is invoked
+   * @param {Object} state - latest corresponding state
+   * @param {Object} action - action dispatched with corresponding dispatch function
+   * @return {Object} updated state
+   */
   const rowItemReducer = (state, action) => {
     switch (action.type) {
       case ACTION_TYPE.SET_VALUE:
@@ -32,7 +39,7 @@ const TableRow = (props) => {
         };
 
       case ACTION_TYPE.TOGGLE_SELECTED:
-        state.isSelected ? props.onUnselectItem(id) : props.onSelectItem(id);
+        state.isSelected ? props.onUnselect(id) : props.onSelect(id);
         return {
           ...state,
           isSelected: !state.isSelected,
@@ -61,6 +68,15 @@ const TableRow = (props) => {
     rowCssClass += ` ${styles.selected}`;
   }
 
+  let actionGroupCssClass = styles["action-group"];
+  if (props.hideActions) {
+    actionGroupCssClass += ` ${styles.hide}`;
+  }
+
+  /**
+   * Function as event handler for onChange event on name input field
+   * @param {Object} event - event fired
+   */
   const changeNameHandler = (event) => {
     rowItemDispatch({
       type: ACTION_TYPE.SET_VALUE,
@@ -68,6 +84,10 @@ const TableRow = (props) => {
     });
   };
 
+  /**
+   * Function as event handler for onChange event on email input field
+   * @param {Object} event - event fired
+   */
   const changeEmailHandler = (event) => {
     rowItemDispatch({
       type: ACTION_TYPE.SET_VALUE,
@@ -75,19 +95,15 @@ const TableRow = (props) => {
     });
   };
 
+  /**
+   * Function as event handler for onChange event on role input field
+   * @param {Object} event - event fired
+   */
   const changeRoleHandler = (event) => {
     rowItemDispatch({
       type: ACTION_TYPE.SET_VALUE,
       payload: { role: event.target.value },
     });
-  };
-
-  /**
-   * Function as event handler for onClick event on action
-   * @param {*} currentAction - action currently clicked by user
-   */
-  const actionClickHandler = (currentAction) => {
-    currentAction.onClick(id); // id corresponds to the id of the data item corresponding to the action clicked
   };
 
   /**
@@ -99,6 +115,9 @@ const TableRow = (props) => {
     });
   };
 
+  /**
+   * Function as event handler for onClick event on Edit icon
+   */
   const editRowDataHandler = () => {
     rowItemDispatch({
       type: ACTION_TYPE.TOGGLE_EDITABLE,
@@ -130,23 +149,17 @@ const TableRow = (props) => {
         onChange={changeRoleHandler}
         disabled={!rowItem.isEditable}
       />
-      <div className={styles["action-group"]}>
-        {props.actions &&
-          props.actions.map((action) => {
-            return (
-              <span
-                key={action.name}
-                className={styles.action}
-                onClick={
-                  action.name === "edit"
-                    ? editRowDataHandler
-                    : () => actionClickHandler(action)
-                }
-              >
-                <i className={action.iconClass}></i>
-              </span>
-            );
-          })}
+      <div className={actionGroupCssClass}>
+        <span className={styles.action} onClick={editRowDataHandler}>
+          <i
+            className={`${icons.FA_ICON_PREFIX}${
+              rowItem.isEditable ? icons.SAVE : icons.EDIT
+            }`}
+          ></i>
+        </span>
+        <span className={styles.action} onClick={props.onSingleRowDelete}>
+          <i className={`${icons.FA_ICON_PREFIX}${icons.DELETE}`}></i>
+        </span>
       </div>
     </ul>
   );
