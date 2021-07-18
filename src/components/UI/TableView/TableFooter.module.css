@@ -1,5 +1,7 @@
 .table-footer {
   margin-top: 2rem;
+  display: grid;
+  grid-template-columns: auto 1fr;
 }
 
 .table-footer-button {

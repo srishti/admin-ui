@@ -5,7 +5,7 @@ css variables
 */
 :root {
   /* global colors */
-  --clr-primary: blue;
+  --clr-primary: #5858fc;
   --clr-black: #444;
   --clr-white: #fff;
   --clr-red: #f14e4e;

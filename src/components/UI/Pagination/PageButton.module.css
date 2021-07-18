@@ -1,0 +1,26 @@
+.page-button {
+  width: 2rem;
+  height: 2rem;
+  background: var(--clr-primary);
+  color: var(--clr-white);
+  border-radius: 50%;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 0.35rem;
+}
+
+.page-button.selected {
+  background: var(--clr-white);
+  color: var(--clr-primary);
+  border: 1px solid var(--clr-primary);
+}
+
+.page-button.disabled {
+  background: var(--clr-light-gray);
+  color: var(--clr-dark-gray);
+  border: 1px solid var(--clr-dark-gray);
+}

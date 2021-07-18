@@ -13,3 +13,5 @@ export const ACTION_TYPE = {
   DELETE_SINGLE: "DELETE_SINGLE",
   DELETE_MULTIPLE: "DELETE_MULTIPLE",
 };
+
+export const PAGE_COUNT = 10;

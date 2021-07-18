@@ -1,5 +1,6 @@
 import React from "react";
 import Button from "../Button/Button";
+import Pagination from "../Pagination/Pagination";
 import styles from "./TableFooter.module.css";
 
 const TableFooter = (props) => {
@@ -13,6 +14,7 @@ const TableFooter = (props) => {
       >
         Delete Selected
       </Button>
+      <Pagination itemCount={props.itemCount} />
     </footer>
   );
 };

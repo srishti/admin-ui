@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from "react";
+import React, { useReducer } from "react";
 import styles from "./TableRow.module.css";
 
 const ACTION_TYPE = {

@@ -33,7 +33,10 @@ const TableView = (props) => {
           />
         );
       })}
-      <TableFooter onDelete={props.onMultipleDelete} />
+      <TableFooter
+        onDelete={props.onMultipleDelete}
+        itemCount={props.data.length}
+      />
     </div>
   );
 };
