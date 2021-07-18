@@ -29,6 +29,7 @@ const AdminList = (props) => {
       labels={headerLabels}
       actions={actions}
       selectedItems={props.selectedItems}
+      onEdit={props.onEdit}
       onSelect={props.onSelect}
       onUnselect={props.onUnselect}
       onMultipleDelete={props.onMultipleDelete}

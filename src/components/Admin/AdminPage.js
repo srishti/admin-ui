@@ -10,6 +10,7 @@ const listReducer = (state, action) => {
     case constants.ACTION_TYPE.VIEW:
     case constants.ACTION_TYPE.DELETE_SINGLE:
     case constants.ACTION_TYPE.DELETE_MULTIPLE:
+    case constants.ACTION_TYPE.EDIT:
       return action.payload;
     default:
       return state;
@@ -17,6 +18,8 @@ const listReducer = (state, action) => {
 };
 
 const AdminPage = () => {
+  console.log("[AdminPage] rendered");
+
   const [dataList, dispatchList] = useReducer(listReducer, []); // keep track of data list fetched from server
   const [filteredDataList, setFilteredDataList] = useState([]); // keep track of data list based on text searched by user
   const [selectedItems, setSelectedItems] = useState([]); // keeps track of IDs of items selected by user by checking the checkbox
@@ -37,15 +40,85 @@ const AdminPage = () => {
   };
 
   /**
+   * Function to edit an item in the dataList (list fetched from server) in state
+   * @param {String} itemId - ID of item to be edited
+   * @param {Object} newItemData - edited data for the item
+   */
+  const editItemInDataList = (itemId, newItemData) => {
+    const updatedDataList = [...dataList];
+    if (updatedDataList.length <= 0) {
+      return;
+    }
+    const indexOfItemToEdit = utils.getElementIndexById(
+      updatedDataList,
+      itemId
+    );
+    if (indexOfItemToEdit > -1) {
+      const existingItemData = updatedDataList[indexOfItemToEdit];
+      updatedDataList[indexOfItemToEdit] = {
+        ...existingItemData,
+        ...newItemData,
+      };
+    }
+    dispatchList({
+      type: constants.ACTION_TYPE.EDIT,
+      payload: updatedDataList,
+    });
+  };
+
+  /**
+   * Function to edit an item in the filteredDataList (list filtered based on search text) in state
+   * @param {String} itemId - ID of item to be edited
+   * @param {Object} newItemData - edited data for the item
+   */
+  const editItemInFilteredDataList = (itemId, newItemData) => {
+    const updatedFilteredDataList = [...filteredDataList];
+    if (updatedFilteredDataList.length <= 0) {
+      return;
+    }
+    const indexOfItemToEdit = utils.getElementIndexById(
+      updatedFilteredDataList,
+      itemId
+    );
+    if (indexOfItemToEdit > -1) {
+      const existingItemData = updatedFilteredDataList[indexOfItemToEdit];
+      updatedFilteredDataList[indexOfItemToEdit] = {
+        ...existingItemData,
+        ...newItemData,
+      };
+    }
+    dispatchList({
+      type: constants.ACTION_TYPE.EDIT,
+      payload: updatedFilteredDataList,
+    });
+  };
+
+  /**
+   * Function to edit an item in the displayed list of items
+   * @param {String} itemId - ID of item to be edited
+   * @param {Object} newItemData - edited data for the item
+   */
+  const editItem = (itemId, newItemData) => {
+    editItemInDataList(itemId, newItemData);
+    editItemInFilteredDataList(itemId, newItemData);
+  };
+
+  /**
    * Function to delete an item from the dataList (list fetched from server) in state
    * @param {String} itemId - ID of item to be deleted
    */
   const deleteItemFromDataList = (itemId) => {
     const updatedDataList = [...dataList];
-    const indexOfItemToDelete = updatedDataList.findIndex(
-      (dataItem) => dataItem.id === itemId
+    if (updatedDataList.length <= 0) {
+      return;
+    }
+    const indexOfItemToDelete = utils.getElementIndexById(
+      updatedDataList,
+      itemId
     );
-    updatedDataList.splice(indexOfItemToDelete, 1);
+    if (indexOfItemToDelete > -1) {
+      updatedDataList.splice(indexOfItemToDelete, 1);
+    }
     dispatchList({
       type: constants.ACTION_TYPE.DELETE_SINGLE,
       payload: updatedDataList,
@@ -58,10 +131,16 @@ const AdminPage = () => {
    */
   const deleteItemFromFilteredDataList = (itemId) => {
     const updatedFilteredDataList = [...filteredDataList];
-    const indexOfItemToDelete = updatedFilteredDataList.findIndex(
-      (dataItem) => dataItem.id === itemId
+    if (updatedFilteredDataList.length <= 0) {
+      return;
+    }
+    const indexOfItemToDelete = utils.getElementIndexById(
+      updatedFilteredDataList,
+      itemId
     );
-    updatedFilteredDataList.splice(indexOfItemToDelete, 1);
+    if (indexOfItemToDelete > -1) {
+      updatedFilteredDataList.splice(indexOfItemToDelete, 1);
+    }
     setFilteredDataList(updatedFilteredDataList);
   };
 
@@ -90,6 +169,9 @@ const AdminPage = () => {
    */
   const unselectItem = (itemId) => {
     const updatedItemsSelected = [...selectedItems];
+    if (updatedItemsSelected.length <= 0) {
+      return;
+    }
     const unselectedItemIndexInDataList = dataList.findIndex(
       (dataItem) => dataItem === itemId
     );
@@ -102,11 +184,17 @@ const AdminPage = () => {
    */
   const deleteSelectedItemsFromDataList = () => {
     const updatedDataList = [...dataList];
+    if (updatedDataList.length <= 0) {
+      return;
+    }
     for (let itemId of selectedItems) {
-      const indexOfSelectedItemInDataList = updatedDataList.findIndex(
-        (dataItem) => dataItem.id === itemId
+      const indexOfSelectedItemInDataList = utils.getElementIndexById(
+        updatedDataList,
+        itemId
       );
-      updatedDataList.splice(indexOfSelectedItemInDataList, 1);
+      if (indexOfSelectedItemInDataList > -1) {
+        updatedDataList.splice(indexOfSelectedItemInDataList, 1);
+      }
     }
     dispatchList({
       type: constants.ACTION_TYPE.DELETE_MULTIPLE,
@@ -119,11 +207,17 @@ const AdminPage = () => {
    */
   const deleteSelectedItemsFromFilteredDataList = () => {
     const updatedFilteredDataList = [...filteredDataList];
+    if (updatedFilteredDataList.length <= 0) {
+      return;
+    }
     for (let itemId of selectedItems) {
-      const indexOfSelectedItemInDataList = updatedFilteredDataList.findIndex(
-        (dataItem) => dataItem.id === itemId
+      const indexOfSelectedItemInDataList = utils.getElementIndexById(
+        updatedFilteredDataList,
+        itemId
       );
-      updatedFilteredDataList.splice(indexOfSelectedItemInDataList, 1);
+      if (indexOfSelectedItemInDataList > -1) {
+        updatedFilteredDataList.splice(indexOfSelectedItemInDataList, 1);
+      }
     }
     setFilteredDataList(updatedFilteredDataList);
   };
@@ -163,6 +257,7 @@ const AdminPage = () => {
       <AdminList
         list={filteredDataList.length > 0 ? filteredDataList : dataList}
         selectedItems={selectedItems}
+        onEdit={editItem}
         onSingleDelete={deleteSingleItem}
         onSelect={selectItem}
         onUnselect={unselectItem}

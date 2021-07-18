@@ -3,6 +3,8 @@ import Button from "../Button/Button";
 import styles from "./TableFooter.module.css";
 
 const TableFooter = (props) => {
+  console.log("[TableFooter] rendered");
+
   return (
     <footer className={styles["table-footer"]}>
       <Button

@@ -4,6 +4,8 @@ import TableRow from "./TableRow";
 import TableFooter from "./TableFooter";
 
 const TableView = (props) => {
+  console.log("[TableView] rendered");
+
   const checkIfRowIsSelected = (itemId) => {
     let isItemPresentInSelectedItems = false;
     isItemPresentInSelectedItems =
@@ -25,6 +27,7 @@ const TableView = (props) => {
             data={dataItem}
             actions={props.actions}
             selected={checkIfRowIsSelected(dataItem.id)}
+            onEdit={props.onEdit}
             onSelect={props.onSelect}
             onUnselect={props.onUnselect}
           />

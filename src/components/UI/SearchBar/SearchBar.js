@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import styles from "./SearchBar.module.css";
 
 const SearchBar = (props) => {
+  console.log("[SearchBar] rendered");
+
   const [searchText, setSearchText] = useState("");
 
   const changeSearchTextHandler = (event) => {
