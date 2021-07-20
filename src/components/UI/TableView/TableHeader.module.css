@@ -1,3 +1,12 @@
-.table-header {
-  font-weight: 600;
+.table-row {
+  border-bottom: 1px solid var(--clr-light-gray);
+}
+
+.table-row th {
+  padding: 1rem;
+  text-align: left;
+}
+
+.table-row th:last-of-type {
+  text-align: center;
 }

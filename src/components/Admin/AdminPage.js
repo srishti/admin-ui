@@ -57,9 +57,11 @@ const AdminPage = () => {
    * @param {Object} newUserData - new data for the user which needs to be merged with the existing user data
    */
   const editUser = (userId, newUserData) => {
-    setUsers(utils.editOrDeleteElementFromArray(users, userId, newUserData));
+    setUsers(
+      utils.editOrDeleteElementFromArrayById(users, userId, newUserData)
+    );
     setFilteredUsers(
-      utils.editOrDeleteElementFromArray(filteredUsers, userId, newUserData)
+      utils.editOrDeleteElementFromArrayById(filteredUsers, userId, newUserData)
     );
   };
 
@@ -68,8 +70,10 @@ const AdminPage = () => {
    * @param {String} userId - ID of user to be deleted
    */
   const deleteSingleUser = (userId) => {
-    setUsers(utils.editOrDeleteElementFromArray(users, userId));
-    setFilteredUsers(utils.editOrDeleteElementFromArray(filteredUsers, userId));
+    setUsers(utils.editOrDeleteElementFromArrayById(users, userId));
+    setFilteredUsers(
+      utils.editOrDeleteElementFromArrayById(filteredUsers, userId)
+    );
   };
 
   /**
@@ -79,8 +83,11 @@ const AdminPage = () => {
     let updatedUsers = [...users];
     let updatedFilteredUsers = [...filteredUsers];
     for (let userId of selectedUserIdsList) {
-      updatedUsers = utils.editOrDeleteElementFromArray(updatedUsers, userId);
-      updatedFilteredUsers = utils.editOrDeleteElementFromArray(
+      updatedUsers = utils.editOrDeleteElementFromArrayById(
+        updatedUsers,
+        userId
+      );
+      updatedFilteredUsers = utils.editOrDeleteElementFromArrayById(
         updatedFilteredUsers,
         userId
       );
@@ -93,7 +100,7 @@ const AdminPage = () => {
    * Function to select (or check) a user from the list of users
    * @param {String} userId - ID of user to be selected
    */
-  const selectUser = (userId) => {
+  const selectSingleUser = (userId) => {
     const updatedUserIdsList = [...selectedUserIdsList];
     updatedUserIdsList.push(userId);
     setSelectedUserIdsList(updatedUserIdsList);
@@ -103,7 +110,7 @@ const AdminPage = () => {
    * Function to select (or check) all users displayed on the current page
    */
   const selectAllCurrentPageUsers = () => {
-    const updatedUserIdsList = [];
+    const updatedUserIdsList = [...selectedUserIdsList];
     for (let user of pageUsers) {
       updatedUserIdsList.push(user.id);
     }
@@ -114,16 +121,23 @@ const AdminPage = () => {
    * Function to unselect (or uncheck) a user from the list of users
    * @param {String} userId - ID of user to be unselected
    */
-  const unselectUser = (userId) => {
-    const updatedUserIdsList = [...selectedUserIdsList];
-    if (updatedUserIdsList.length <= 0) {
-      return;
-    }
-    const indexOfUserToUnselectInUsersList = utils.getElementIndexById(
-      pageUsers,
-      userId
+  const unselectSingleUser = (userId) => {
+    setSelectedUserIdsList(
+      utils.editOrDeleteElementFromArray(selectedUserIdsList, userId)
     );
-    updatedUserIdsList.splice(indexOfUserToUnselectInUsersList, 1);
+  };
+
+  /**
+   * Function to unselect (or uncheck) all users displayed on the current page
+   */
+  const unselectAllCurrentPageUsers = () => {
+    let updatedUserIdsList = [...selectedUserIdsList];
+    for (let user of pageUsers) {
+      updatedUserIdsList = utils.editOrDeleteElementFromArray(
+        updatedUserIdsList,
+        user.id
+      );
+    }
     setSelectedUserIdsList(updatedUserIdsList);
   };
 
@@ -162,9 +176,10 @@ const AdminPage = () => {
         onEditUser={editUser}
         onDeleteSingleUser={deleteSingleUser}
         onDeleteMultipleUsers={deleteMultipleUsers}
-        onSelectUser={selectUser}
+        onSelectSingleUser={selectSingleUser}
         onSelectCurrentPageUsers={selectAllCurrentPageUsers}
-        onUnselectUser={unselectUser}
+        onUnselectSingleUser={unselectSingleUser}
+        onUnselectCurrentPageUsers={unselectAllCurrentPageUsers}
         onSelectPage={displayUsersOnCurrentPage}
       />
     </main>

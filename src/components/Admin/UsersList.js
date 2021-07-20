@@ -5,11 +5,7 @@ const UsersList = (props) => {
   console.log("[UsersList] rendered");
 
   // labels to be displayed inside table header
-  const tableViewHeaderLabels = {
-    name: "Name",
-    email: "Email",
-    role: "Role",
-  };
+  const tableViewHeaderLabels = ["Name", "Email", "Role", "Actions"];
 
   return (
     <TableView
@@ -18,9 +14,10 @@ const UsersList = (props) => {
       itemsCount={props.usersCount}
       selectedRows={props.selectedUsersIds}
       currentPage={props.currentPage}
-      onSelectRow={props.onSelectUser}
+      onSelectSingleRow={props.onSelectSingleUser}
       onSelectAllRows={props.onSelectCurrentPageUsers}
-      onUnselectRow={props.onUnselectUser}
+      onUnselectSingleRow={props.onUnselectSingleUser}
+      onUnselectAllRows={props.onUnselectCurrentPageUsers}
       onEdit={props.onEditUser}
       onSingleRowDelete={props.onDeleteSingleUser}
       onMultipleRowsDelete={props.onDeleteMultipleUsers}

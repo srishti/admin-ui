@@ -7,7 +7,7 @@ const TableFooter = (props) => {
   console.log("[TableFooter] rendered");
 
   return (
-    <footer className={styles["table-footer"]}>
+    <div className={styles["table-footer"]}>
       <Button
         className={styles["table-footer-button"]}
         onClick={props.onMultipleRowsDelete}
@@ -19,7 +19,7 @@ const TableFooter = (props) => {
         currentPage={props.currentPage}
         onSelectPage={props.onSelectPage}
       />
-    </footer>
+    </div>
   );
 };
 

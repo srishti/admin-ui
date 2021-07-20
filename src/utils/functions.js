@@ -31,24 +31,45 @@ export const getElementIndexById = ([...objectArray], elementId) => {
  * @param {Object} newElementDataToMerge - new data to be merged with element's existing data to be edited
  * @returns updated array
  */
-export const editOrDeleteElementFromArray = (
+export const editOrDeleteElementFromArrayById = (
   [...objectArray],
   elementId,
   newElementDataToMerge = null
 ) => {
-  const elementIndexInArray = getElementIndexById(objectArray, elementId);
-  if (elementIndexInArray > -1) {
-    if (newElementDataToMerge) {
-      // EDIT element when newElementDataToMerge exists
-      const existingElementData = objectArray[elementIndexInArray];
-      objectArray[elementIndexInArray] = {
-        ...existingElementData,
-        ...newElementDataToMerge,
-      };
-    } else {
-      // DELETE element when newElementDataToMerge does not exist
-      objectArray.splice(elementIndexInArray, 1);
+  if (newElementDataToMerge) {
+    // EDIT element when newElementDataToMerge exists
+    objectArray = objectArray.filter((element) => element.id === elementId);
+    for (let element of objectArray) {
+      element = [...element, ...newElementDataToMerge];
     }
+  } else {
+    // DELETE element when newElementDataToMerge does not exist
+    objectArray = objectArray.filter((element) => element.id !== elementId);
   }
   return objectArray;
+};
+
+/**
+ * Function to the edit/delete an element with given value from an array of strings
+ * @param {Array} array - array to be searched inside
+ * @param {String} elementExistingValue - value of element to be edited/deleted
+ * @param {String} elementNewValue - new value of element to be edited
+ * @returns updated array
+ */
+export const editOrDeleteElementFromArray = (
+  [...array],
+  elementExistingValue,
+  elementNewValue = null
+) => {
+  if (elementNewValue) {
+    // EDIT element when elementNewValue exists
+    array = array.filter((element) => element === elementExistingValue);
+    for (let element of array) {
+      element = elementNewValue;
+    }
+  } else {
+    // DELETE element when elementNewValue does not exist
+    array = array.filter((element) => element !== elementExistingValue);
+  }
+  return array;
 };
