@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import PageButton from "./PageButton";
 import * as constants from "../../../utils/constants";
+import TableViewContext from "../../../context/UI/table-view-context";
 import styles from "./Pagination.module.css";
 
 /**
@@ -16,12 +17,14 @@ const Pagination = (props) => {
   console.log("[Pagination] rendered");
 
   const [pageCount, setPageCount] = useState(null);
+  const tableViewContext = useContext(TableViewContext);
 
   /**
    * Function as event handler for selecting a page
    * @param {*} pageNumber - page number to be selected
    */
   const selectPage = (pageNumber) => {
+    tableViewContext.onUncheckTableHeaderCheckbox();
     props.onSelectPage(+pageNumber);
   };
 

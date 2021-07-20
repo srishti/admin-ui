@@ -109,6 +109,13 @@ const TableRow = (props) => {
     });
   };
 
+  /**
+   * Function as event handler for onClick event on Delete icon
+   */
+  const deleteRowHandler = () => {
+    props.onDeleteSingleRow(id);
+  };
+
   return (
     <tr className={rowCssClass}>
       <td>
@@ -150,7 +157,7 @@ const TableRow = (props) => {
             }`}
           ></i>
         </span>
-        <span className={styles.action} onClick={props.onSingleRowDelete}>
+        <span className={styles.action} onClick={deleteRowHandler}>
           <i className={`${icons.FA_ICON_PREFIX}${icons.DELETE}`}></i>
         </span>
       </td>

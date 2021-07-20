@@ -10,7 +10,7 @@ const TableFooter = (props) => {
     <div className={styles["table-footer"]}>
       <Button
         className={styles["table-footer-button"]}
-        onClick={props.onMultipleRowsDelete}
+        onClick={props.onDeleteMultipleRows}
       >
         Delete Selected
       </Button>

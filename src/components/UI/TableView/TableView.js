@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import TableHeader from "./TableHeader";
 import TableRow from "./TableRow";
 import TableFooter from "./TableFooter";
+import { TableViewContextProvier } from "../../../context/UI/table-view-context";
 import styles from "./TableView.module.css";
 
 const TableView = (props) => {
@@ -17,13 +18,12 @@ const TableView = (props) => {
   };
 
   return (
-    <>
+    <TableViewContextProvier
+      onSelectAllRows={props.onSelectAllRows}
+      onUnselectAllRows={props.onUnselectAllRows}
+    >
       <table className={styles.table}>
-        <TableHeader
-          labels={props.labels}
-          onSelectAllRows={props.onSelectAllRows}
-          onUnselectAllRows={props.onUnselectAllRows}
-        />
+        <TableHeader labels={props.labels} />
         <tbody>
           {props.data.map((dataItem) => {
             return (
@@ -32,7 +32,7 @@ const TableView = (props) => {
                 data={dataItem}
                 selected={checkIfRowIsSelected(dataItem.id)}
                 onEdit={props.onEdit}
-                onSingleRowDelete={props.onDeleteSingleUser}
+                onDeleteSingleRow={props.onDeleteSingleRow}
                 onSelect={props.onSelectSingleRow}
                 onUnselect={props.onUnselectSingleRow}
               />
@@ -43,10 +43,10 @@ const TableView = (props) => {
       <TableFooter
         itemsCount={props.itemsCount}
         currentPage={props.currentPage}
-        onMultipleRowsDelete={props.onMultipleRowsDelete}
+        onDeleteMultipleRows={props.onDeleteMultipleRows}
         onSelectPage={props.onSelectPage}
       />
-    </>
+    </TableViewContextProvier>
   );
 };
 

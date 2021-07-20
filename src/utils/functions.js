@@ -38,13 +38,21 @@ export const editOrDeleteElementFromArrayById = (
 ) => {
   if (newElementDataToMerge) {
     // EDIT element when newElementDataToMerge exists
-    objectArray = objectArray.filter((element) => element.id === elementId);
-    for (let element of objectArray) {
-      element = [...element, ...newElementDataToMerge];
-    }
+    objectArray = objectArray.map((objectElement) => {
+      if (objectElement.id === elementId) {
+        return {
+          ...objectElement,
+          ...newElementDataToMerge,
+        };
+      } else {
+        return objectElement;
+      }
+    });
   } else {
     // DELETE element when newElementDataToMerge does not exist
-    objectArray = objectArray.filter((element) => element.id !== elementId);
+    objectArray = objectArray.filter(
+      (objectElement) => objectElement.id !== elementId
+    );
   }
   return objectArray;
 };

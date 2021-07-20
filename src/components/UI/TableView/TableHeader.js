@@ -1,18 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
+import TableViewContext from "../../../context/UI/table-view-context";
 import styles from "./TableHeader.module.css";
 
 const TableHeader = (props) => {
   console.log("[TableHeader] rendered");
 
-  const [isChecked, setIsChecked] = useState(false);
-
-  const checkBoxToggleHandler = () => {
-    setIsChecked((prevState) => {
-      const toggledState = !prevState;
-      toggledState ? props.onSelectAllRows() : props.onUnselectAllRows();
-      return toggledState;
-    });
-  };
+  const tableViewContext = useContext(TableViewContext);
 
   return (
     <thead className={styles["table-head"]}>
@@ -20,8 +13,8 @@ const TableHeader = (props) => {
         <th>
           <input
             type="checkbox"
-            onChange={checkBoxToggleHandler}
-            checked={isChecked}
+            checked={tableViewContext.isTableHeaderChecked}
+            onChange={tableViewContext.onToggleTableHeaderCheckbox}
           />
         </th>
         {props.labels.map((label) => (
