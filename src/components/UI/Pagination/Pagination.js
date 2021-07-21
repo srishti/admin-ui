@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import PageButton from "./PageButton";
 import * as constants from "../../../utils/constants";
 import TableViewContext from "../../../context/UI/table-view-context";
+import PropTypes from "prop-types";
 import styles from "./Pagination.module.css";
 
 /**
@@ -99,6 +100,12 @@ const Pagination = (props) => {
       </PageButton>
     </div>
   );
+};
+
+Pagination.propTypes = {
+  currentPage: PropTypes.number.isRequired,
+  itemsCount: PropTypes.number.isRequired,
+  onSelectPage: PropTypes.func.isRequired,
 };
 
 export default Pagination;

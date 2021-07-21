@@ -3,6 +3,7 @@ import TableHeader from "./TableHeader";
 import TableRow from "./TableRow";
 import TableFooter from "./TableFooter";
 import { TableViewContextProvier } from "../../../context/UI/table-view-context";
+import PropTypes from "prop-types";
 import styles from "./TableView.module.css";
 
 const TableView = (props) => {
@@ -46,6 +47,22 @@ const TableView = (props) => {
       />
     </TableViewContextProvier>
   );
+};
+
+TableView.propTypes = {
+  data: PropTypes.array.isRequired,
+  labels: PropTypes.array.isRequired,
+  selectedRows: PropTypes.array.isRequired,
+  itemsCount: PropTypes.number.isRequired,
+  currentPage: PropTypes.number.isRequired,
+  onDeleteMultipleRows: PropTypes.func.isRequired,
+  onSelectAllRows: PropTypes.func.isRequired,
+  onUnselectAllRows: PropTypes.func.isRequired,
+  onSelectPage: PropTypes.func.isRequired,
+  onEdit: PropTypes.func.isRequired,
+  onDeleteSingleRow: PropTypes.func.isRequired,
+  onSelectSingleRow: PropTypes.func.isRequired,
+  onUnselectSingleRow: PropTypes.func.isRequired,
 };
 
 export default TableView;

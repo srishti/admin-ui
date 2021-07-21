@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 
 const TableViewContext = React.createContext({
   isTableHeaderChecked: false,
@@ -43,4 +44,8 @@ export const TableViewContextProvier = (props) => {
   );
 };
 
+TableViewContext.propTypes = {
+  onSelectAllRows: PropTypes.func.isRequired,
+  onUnselectAllRows: PropTypes.func.isRequired,
+};
 export default TableViewContext;

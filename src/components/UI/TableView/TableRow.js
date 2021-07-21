@@ -1,5 +1,6 @@
 import React, { useReducer } from "react";
 import * as icons from "../../../utils/icons";
+import PropTypes from "prop-types";
 import styles from "./TableRow.module.css";
 
 const ACTION_TYPE = {
@@ -157,6 +158,15 @@ const TableRow = (props) => {
       </td>
     </tr>
   );
+};
+
+TableRow.propTypes = {
+  data: PropTypes.object.isRequired,
+  selected: PropTypes.bool.isRequired,
+  onEdit: PropTypes.func.isRequired,
+  onSelect: PropTypes.func.isRequired,
+  onUnselect: PropTypes.func.isRequired,
+  onDeleteSingleRow: PropTypes.func.isRequired,
 };
 
 export default TableRow;

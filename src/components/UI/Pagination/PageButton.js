@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import styles from "./PageButton.module.css";
 
 const PageButton = (props) => {
@@ -19,11 +20,21 @@ const PageButton = (props) => {
       type="button"
       className={cssClass}
       onClick={pageClickHandler}
-      disabled={props.disabled}
+      disabled={props.disabled || false}
     >
       <span>{props.children}</span>
     </button>
   );
+};
+
+PageButton.propTypes = {
+  selected: PropTypes.bool,
+  disabled: PropTypes.bool,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]).isRequired,
+  onClick: PropTypes.func.isRequired,
 };
 
 export default PageButton;

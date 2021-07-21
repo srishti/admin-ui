@@ -1,12 +1,15 @@
 import React from "react";
 import AdminPage from "./components/Admin/AdminPage";
 import { AdminContextProvider } from "./context/admin-context";
+import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary";
 
 const App = () => {
   return (
-    <AdminContextProvider>
-      <AdminPage />
-    </AdminContextProvider>
+    <ErrorBoundary>
+      <AdminContextProvider>
+        <AdminPage />
+      </AdminContextProvider>
+    </ErrorBoundary>
   );
 };
 
