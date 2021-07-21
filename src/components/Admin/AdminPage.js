@@ -13,6 +13,8 @@ const AdminPage = () => {
     <main className={styles["admin-page"]}>
       <SearchBar
         placeholder="Search by name, email or role"
+        value={adminContext.searchText}
+        onChange={adminContext.onChangeSearchText}
         onSearch={adminContext.onSearchUser}
       />
       <UsersList />

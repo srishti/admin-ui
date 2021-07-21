@@ -72,8 +72,8 @@ export const editOrDeleteElementFromArray = (
   if (elementNewValue) {
     // EDIT element when elementNewValue exists
     array = array.filter((element) => element === elementExistingValue);
-    for (let element of array) {
-      element = elementNewValue;
+    for (let index in array) {
+      array[index] = elementNewValue;
     }
   } else {
     // DELETE element when elementNewValue does not exist

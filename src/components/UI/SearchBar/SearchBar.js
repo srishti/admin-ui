@@ -1,25 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import styles from "./SearchBar.module.css";
 
 const SearchBar = (props) => {
   console.log("[SearchBar] rendered");
 
-  const [userInput, setUserInput] = useState("");
-
   const changeUserInputHandler = (event) => {
-    setUserInput(event.target.value);
+    props.onChange(event.target.value);
   };
+
+  const { value } = props;
 
   useEffect(() => {
     // DEBOUNCING - search for text only after 300ms expire instead of searching on every key stroke
     const searchTimer = setTimeout(() => {
-      props.onSearch(userInput);
+      props.onSearch();
     }, 500);
 
     return () => {
       clearTimeout(searchTimer);
     };
-  }, [userInput]);
+  }, [value]);
 
   return (
     <section className={styles.searchbar}>

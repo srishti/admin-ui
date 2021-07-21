@@ -7,7 +7,9 @@ const AdminContext = React.createContext({
   selectedUsersIds: [],
   usersCount: null,
   currentPage: null,
-  onSearchUser: (textToSearch) => {},
+  searchText: null,
+  onChangeSearchText: (currentSearchValue) => {},
+  onSearchUser: () => {},
   onEditUser: (userId, newUserData) => {},
   onDeleteSingleUser: (userId) => {},
   onDeleteMultipleUsers: () => {},
@@ -24,6 +26,15 @@ export const AdminContextProvider = (props) => {
   const [pageUsers, setPageUsers] = useState([]); // keeps track of users list displayed on current page
   const [selectedUserIdsList, setSelectedUserIdsList] = useState([]); // keeps track of user IDs selected by admin by checking the checkbox
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchText, setSearchText] = useState(""); // keeps track of text entered by user in the searchbox
+
+  /**
+   * Function as event handler for registering change in text entered by user in search textbox
+   * @param {String} currentSearchValue - current value entered by user in search textbox
+   */
+  const changeSearchTextHandler = (currentSearchValue) => {
+    setSearchText(currentSearchValue);
+  };
 
   /**
    * Function to display users on current page
@@ -48,14 +59,14 @@ export const AdminContextProvider = (props) => {
    * Function to search for a name or email or role in a list of users
    * @param {String} textToSearch
    */
-  const searchUser = (textToSearch) => {
-    if (textToSearch) {
+  const searchUser = () => {
+    if (searchText) {
       // filter list based on whether name or email or role matches text entered in search box
       const updatedFilteredUsers = users.filter(
         (user) =>
-          utils.checkIfCaseInsensitiveSubstring(user.name, textToSearch) ||
-          utils.checkIfCaseInsensitiveSubstring(user.email, textToSearch) ||
-          utils.checkIfCaseInsensitiveSubstring(user.role, textToSearch)
+          utils.checkIfCaseInsensitiveSubstring(user.name, searchText) ||
+          utils.checkIfCaseInsensitiveSubstring(user.email, searchText) ||
+          utils.checkIfCaseInsensitiveSubstring(user.role, searchText)
       );
       setFilteredUsers(updatedFilteredUsers);
     } else {
@@ -69,12 +80,8 @@ export const AdminContextProvider = (props) => {
    * @param {Object} newUserData - new data for the user which needs to be merged with the existing user data
    */
   const editUser = (userId, newUserData) => {
-    console.log("jey");
     setUsers(
       utils.editOrDeleteElementFromArrayById(users, userId, newUserData)
-    );
-    setFilteredUsers(
-      utils.editOrDeleteElementFromArrayById(filteredUsers, userId, newUserData)
     );
   };
 
@@ -84,9 +91,6 @@ export const AdminContextProvider = (props) => {
    */
   const deleteSingleUser = (userId) => {
     setUsers(utils.editOrDeleteElementFromArrayById(users, userId));
-    setFilteredUsers(
-      utils.editOrDeleteElementFromArrayById(filteredUsers, userId)
-    );
   };
 
   /**
@@ -106,7 +110,6 @@ export const AdminContextProvider = (props) => {
       );
     }
     setUsers(updatedUsers);
-    setFilteredUsers(updatedFilteredUsers);
   };
 
   /**
@@ -154,6 +157,7 @@ export const AdminContextProvider = (props) => {
     setSelectedUserIdsList(updatedUserIdsList);
   };
 
+  // fetch data from server when AdminContextProvider component is mounted on DOM
   useEffect(() => {
     const fetchUsers = async () => {
       let jsonResponse = null;
@@ -169,8 +173,28 @@ export const AdminContextProvider = (props) => {
     fetchUsers();
   }, []);
 
+  // update filteredUsers (search results) if searchText exists and when users is updated
+  useEffect(() => {
+    if (searchText) {
+      searchUser(searchText);
+    }
+  }, [users]);
+
+  // update user results on current page when users or filteredUsers is updated
   useEffect(() => {
     displayUsersOnCurrentPage(currentPage);
+  }, [users, filteredUsers]);
+
+  // update currentPage when it exceeds the total items to be displayed
+  useEffect(() => {
+    if (
+      (users.length > 0 &&
+        currentPage > Math.ceil(users.length / constants.PAGE_LIMIT)) ||
+      (filteredUsers.length > 0 &&
+        currentPage > Math.ceil(filteredUsers.length / constants.PAGE_LIMIT))
+    ) {
+      setCurrentPage((prevState) => prevState - 1);
+    }
   }, [users, filteredUsers]);
 
   const adminContextProviderValues = {
@@ -178,6 +202,8 @@ export const AdminContextProvider = (props) => {
     selectedUsersIds: selectedUserIdsList,
     usersCount: filteredUsers.length > 0 ? filteredUsers.length : users.length,
     currentPage: currentPage,
+    searchText: searchText,
+    onChangeSearchText: changeSearchTextHandler,
     onSearchUser: searchUser,
     onEditUser: editUser,
     onDeleteSingleUser: deleteSingleUser,
