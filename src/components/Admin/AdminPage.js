@@ -9,6 +9,8 @@ const AdminPage = () => {
 
   const adminContext = useContext(AdminContext);
 
+  const emptySearchResultsContent = <p>No result found.</p>;
+
   return (
     <main className={styles["admin-page"]}>
       <SearchBar
@@ -17,7 +19,11 @@ const AdminPage = () => {
         onChange={adminContext.onChangeSearchText}
         onSearch={adminContext.onSearchUser}
       />
-      <UsersList />
+      {adminContext.isSearchResultEmpty ? (
+        emptySearchResultsContent
+      ) : (
+        <UsersList />
+      )}
     </main>
   );
 };

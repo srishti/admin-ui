@@ -8,6 +8,7 @@ const AdminContext = React.createContext({
   usersCount: null,
   currentPage: null,
   searchText: null,
+  isSearchResultEmpty: false,
   onChangeSearchText: (currentSearchValue) => {},
   onSearchUser: () => {},
   onEditUser: (userId, newUserData) => {},
@@ -27,6 +28,7 @@ export const AdminContextProvider = (props) => {
   const [selectedUserIdsList, setSelectedUserIdsList] = useState([]); // keeps track of user IDs selected by admin by checking the checkbox
   const [currentPage, setCurrentPage] = useState(1);
   const [searchText, setSearchText] = useState(""); // keeps track of text entered by user in the searchbox
+  const [isSearchResultEmpty, setIsSearchResultEmpty] = useState(false);
 
   /**
    * Function as event handler for registering change in text entered by user in search textbox
@@ -201,12 +203,18 @@ export const AdminContextProvider = (props) => {
     }
   }, [users, filteredUsers]);
 
+  // update isSearchResultEmpty whenever filteredUsers changes and determine it based on whether the searchbox has text typed in by the user yet the filteredUsers array is empty (contains no search results)
+  useEffect(() => {
+    setIsSearchResultEmpty(searchText && filteredUsers.length === 0);
+  }, [filteredUsers]);
+
   const adminContextProviderValues = {
     userData: pageUsers,
     selectedUsersIds: selectedUserIdsList,
     usersCount: filteredUsers.length > 0 ? filteredUsers.length : users.length,
     currentPage: currentPage,
     searchText: searchText,
+    isSearchResultEmpty: isSearchResultEmpty,
     onChangeSearchText: changeSearchTextHandler,
     onSearchUser: searchUser,
     onEditUser: editUser,
