@@ -193,7 +193,11 @@ export const AdminContextProvider = (props) => {
       (filteredUsers.length > 0 &&
         currentPage > Math.ceil(filteredUsers.length / constants.PAGE_LIMIT))
     ) {
-      setCurrentPage((prevState) => prevState - 1);
+      setCurrentPage((prevState) => {
+        const newPage = prevState - 1;
+        displayUsersOnCurrentPage(newPage);
+        return newPage;
+      });
     }
   }, [users, filteredUsers]);
 
