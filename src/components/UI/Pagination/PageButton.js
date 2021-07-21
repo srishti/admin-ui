@@ -2,8 +2,6 @@ import React from "react";
 import styles from "./PageButton.module.css";
 
 const PageButton = (props) => {
-  console.log("[PageButton] rendered");
-
   let cssClass = styles["page-button"];
   if (props.selected) {
     cssClass += ` ${styles["selected"]}`;

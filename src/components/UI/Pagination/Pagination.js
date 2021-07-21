@@ -14,8 +14,6 @@ const getPageCount = (itemsCount) => {
 };
 
 const Pagination = (props) => {
-  console.log("[Pagination] rendered");
-
   const [pageCount, setPageCount] = useState(null);
   const tableViewContext = useContext(TableViewContext);
 

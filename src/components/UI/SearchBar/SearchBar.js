@@ -1,9 +1,8 @@
+/* eslint-disable */
 import React, { useEffect } from "react";
 import styles from "./SearchBar.module.css";
 
 const SearchBar = (props) => {
-  console.log("[SearchBar] rendered");
-
   const changeUserInputHandler = (event) => {
     props.onChange(event.target.value);
   };

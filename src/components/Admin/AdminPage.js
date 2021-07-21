@@ -5,8 +5,6 @@ import AdminContext from "../../context/admin-context";
 import styles from "./AdminPage.module.css";
 
 const AdminPage = () => {
-  console.log("[AdminPage] rendered");
-
   const adminContext = useContext(AdminContext);
 
   const emptySearchResultsContent = <p>No result found.</p>;

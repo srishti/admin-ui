@@ -6,8 +6,6 @@ import { TableViewContextProvier } from "../../../context/UI/table-view-context"
 import styles from "./TableView.module.css";
 
 const TableView = (props) => {
-  console.log("[TableView] rendered");
-
   /**
    * Function to check if given row is selected
    * @param {String} itemId - ID of item contained inside the row

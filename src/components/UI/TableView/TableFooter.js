@@ -4,8 +4,6 @@ import Pagination from "../Pagination/Pagination";
 import styles from "./TableFooter.module.css";
 
 const TableFooter = (props) => {
-  console.log("[TableFooter] rendered");
-
   return (
     <div className={styles["table-footer"]}>
       <Button

@@ -3,8 +3,6 @@ import TableViewContext from "../../../context/UI/table-view-context";
 import styles from "./TableHeader.module.css";
 
 const TableHeader = (props) => {
-  console.log("[TableHeader] rendered");
-
   const tableViewContext = useContext(TableViewContext);
 
   return (

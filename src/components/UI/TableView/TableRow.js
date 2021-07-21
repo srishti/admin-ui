@@ -8,8 +8,6 @@ const ACTION_TYPE = {
 };
 
 const TableRow = (props) => {
-  console.log("[TableRow] rendered");
-
   const { id, name, email, role } = props.data;
 
   const ROW_DATA_INITIAL_STATE = {

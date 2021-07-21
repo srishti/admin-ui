@@ -2,15 +2,16 @@
 
 This application is a front-end project which is designed as part of the [coding challenge](https://www.geektrust.in/coding-problem/frontend/adminui) at [Geektrust](https://www.geektrust.in/).
 
+[**View Demo**](https://srishti-geektrust-admin-ui.netlify.app/)
+
 ![App Screenshot](admin-ui.png)
 
 ## Table of Contents
 
 1. [Overview](#overview)
 2. [Installation](#installation)
-3. [Features](#features)
-4. [Key Notes](#key-notes)
-5. [Bootstrapping](#bootstrapping)
+3. [Key Features](#key-features)
+4. [Bootstrapping](#bootstrapping)
 
 ## Overview
 
@@ -31,6 +32,24 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
+
+## Features
+
+### **Debouncing on Search**
+
+The search feature is implemented using debouncing for 500 miliseconds. This implies that a keyword is not searched until a user stops typing and waits for atleast 500 miliseconds to see the search results. Debouncing ensures that an event is not unnecessarily fired too frequently.
+
+### Error Handling
+
+The `ErrorBoundary` component helps in catching an error in a component and displays the message "Something went wrong!" when a particular component encounters any error while rendering the other components properly. It also logs the error and its related information to the console for more details.
+
+### **Responsiveness**
+
+The entire application is responsive to devices of varied dimensions.
+
+### Documentation
+
+The code is well documented for the author and other developers to understand.
 
 ## Bootstrapping
 

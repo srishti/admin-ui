@@ -3,8 +3,6 @@ import TableView from "../UI/TableView/TableView";
 import AdminContext from "../../context/admin-context";
 
 const UsersList = () => {
-  console.log("[UsersList] rendered");
-
   const adminContext = useContext(AdminContext);
 
   // labels to be displayed inside table header
