@@ -57,7 +57,7 @@ const TableRow = (props) => {
 
   let rowCssClass = styles["table-row"];
   if (props.selected) {
-    rowCssClass += ` ${styles.selected}`;
+    rowCssClass += ` ${styles["selected"]}`;
   }
 
   /**
@@ -125,23 +125,19 @@ const TableRow = (props) => {
           checked={props.selected}
         />
       </td>
-      <td>
+      <td className={styles["custom-data-group"]}>
         <input
           type="text"
           value={rowData.value.name}
           onChange={changeNameHandler}
           disabled={!rowData.isEditable}
         />
-      </td>
-      <td>
         <input
           type="text"
           value={rowData.value.email}
           onChange={changeEmailHandler}
           disabled={!rowData.isEditable}
         />
-      </td>
-      <td>
         <input
           type="text"
           value={rowData.value.role}
@@ -149,17 +145,17 @@ const TableRow = (props) => {
           disabled={!rowData.isEditable}
         />
       </td>
-      <td className={styles["action-group"]}>
-        <span className={styles.action} onClick={editRowDataHandler}>
+      <td className={styles["actions-group"]}>
+        <div className={styles["action"]} onClick={editRowDataHandler}>
           <i
             className={`${icons.FA_ICON_PREFIX}${
               rowData.isEditable ? icons.SAVE : icons.EDIT
             }`}
           ></i>
-        </span>
-        <span className={styles.action} onClick={deleteRowHandler}>
+        </div>
+        <div className={styles["action"]} onClick={deleteRowHandler}>
           <i className={`${icons.FA_ICON_PREFIX}${icons.DELETE}`}></i>
-        </span>
+        </div>
       </td>
     </tr>
   );

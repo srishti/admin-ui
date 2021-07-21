@@ -22,7 +22,7 @@ const SearchBar = (props) => {
   }, [value]);
 
   return (
-    <section className={styles.searchbar}>
+    <section className={styles["search-bar"]}>
       <input
         type="text"
         placeholder={props.placeholder}

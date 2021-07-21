@@ -22,7 +22,7 @@ const TableView = (props) => {
       onSelectAllRows={props.onSelectAllRows}
       onUnselectAllRows={props.onUnselectAllRows}
     >
-      <table className={styles.table}>
+      <table className={styles["table"]}>
         <TableHeader labels={props.labels} />
         <tbody>
           {props.data.map((dataItem) => {

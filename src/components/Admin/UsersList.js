@@ -8,7 +8,7 @@ const UsersList = () => {
   const adminContext = useContext(AdminContext);
 
   // labels to be displayed inside table header
-  const tableViewHeaderLabels = ["Name", "Email", "Role", "Actions"];
+  const tableViewHeaderLabels = ["Name", "Email", "Role"];
 
   return (
     <TableView

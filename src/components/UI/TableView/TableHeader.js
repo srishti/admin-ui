@@ -8,7 +8,7 @@ const TableHeader = (props) => {
   const tableViewContext = useContext(TableViewContext);
 
   return (
-    <thead className={styles["table-head"]}>
+    <thead>
       <tr className={styles["table-row"]}>
         <th>
           <input
@@ -17,9 +17,14 @@ const TableHeader = (props) => {
             onChange={tableViewContext.onToggleTableHeaderCheckbox}
           />
         </th>
-        {props.labels.map((label) => (
-          <th key={label}>{label}</th>
-        ))}
+        <th className={styles["custom-label-group"]}>
+          {props.labels.map((label) => (
+            <div key={label}>{label}</div>
+          ))}
+        </th>
+        <th className={styles["actions-label"]}>
+          <div>Actions</div>
+        </th>
       </tr>
     </thead>
   );

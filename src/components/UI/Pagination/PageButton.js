@@ -6,10 +6,10 @@ const PageButton = (props) => {
 
   let cssClass = styles["page-button"];
   if (props.selected) {
-    cssClass += ` ${styles.selected}`;
+    cssClass += ` ${styles["selected"]}`;
   }
   if (props.disabled) {
-    cssClass += ` ${styles.disabled}`;
+    cssClass += ` ${styles["disabled"]}`;
   }
 
   const pageClickHandler = (event) => {

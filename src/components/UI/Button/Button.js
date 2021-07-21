@@ -4,7 +4,7 @@ import styles from "./Button.module.css";
 const Button = (props) => {
   console.log("[Button] rendered");
 
-  let cssClass = styles.button;
+  let cssClass = styles["button"];
   if (props.className) {
     cssClass += ` ${props.className}`;
   }

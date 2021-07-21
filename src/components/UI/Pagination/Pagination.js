@@ -79,7 +79,7 @@ const Pagination = (props) => {
   }, [props.itemsCount]);
 
   return (
-    <div className={styles.pagination}>
+    <div className={styles["pagination"]}>
       <PageButton onClick={goToFirstPage} disabled={props.currentPage <= 1}>
         {"<<"}
       </PageButton>
