@@ -29,7 +29,7 @@ export const AdminContextProvider = (props) => {
   const [selectedUserIdsList, setSelectedUserIdsList] = useState([]); // keeps track of user IDs selected by admin by checking the checkbox
   const [currentPage, setCurrentPage] = useState(1);
   const [searchText, setSearchText] = useState(""); // keeps track of text entered by user in the searchbox
-  const [isSearchResultEmpty, setIsSearchResultEmpty] = useState(false);
+  const [isSearchResultEmpty, setIsSearchResultEmpty] = useState(false); // keeps track of whether filteredUsers is empty based on existence of searchText
 
   /**
    * Function as event handler for registering change in text entered by user in search textbox

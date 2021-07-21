@@ -39,4 +39,8 @@
     grid-auto-columns: 1fr;
     grid-auto-flow: column;
   }
+
+  .custom-label-group div:not(:last-of-type) {
+    margin-bottom: 0;
+  }
 }
